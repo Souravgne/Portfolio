@@ -6,9 +6,7 @@ import { Navbar } from "./components";
 import Admin from "./components/Admin/Admin";
 import Dashboard from "./components/Dashboard/Dashboard";
 import "./App.scss";
-import { Toaster } from 'react-hot-toast';
-
-
+import { Toaster } from "react-hot-toast";
 
 const MainApp = () => (
   <>
@@ -24,10 +22,10 @@ const MainApp = () => (
 
 const App = () => (
   <Router>
-      <Toaster position="top-center" reverseOrder={false} />
+    <Toaster position="top-center" reverseOrder={false} />
     <Routes>
-      <Route path="/admin" element={<Admin/>} />
-      <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/admin" element={<Admin />} />
+      <Route path="/dashboard/*" element={<Dashboard />} />
       <Route path="/*" element={<MainApp />} />
     </Routes>
   </Router>
