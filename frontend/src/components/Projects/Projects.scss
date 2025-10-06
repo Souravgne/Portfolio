@@ -1,0 +1,204 @@
+.projects-container {
+  max-width: 1000px;
+  margin: 2rem auto;
+}
+
+.projects-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+
+  .add-btn {
+    background-color: #1a237e;
+    color: #fff;
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    &:hover {
+      background-color: #222c8a;
+    }
+  }
+}
+
+.project-card {
+  display: flex;
+  align-items: flex-start;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  padding: 1rem;
+  margin-bottom: 1rem;
+
+  img {
+    width: 120px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 6px;
+    margin-right: 1rem;
+  }
+
+  .project-info {
+    flex: 1;
+  }
+
+  .project-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    button {
+      padding: 0.4rem 1rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      background-color: #1a237e;
+      color: #fff;
+      &.delete {
+        background-color: #d32f2f;
+      }
+    }
+
+  }
+}
+
+/* Keep your previous CSS above — this adds form styling */
+.project-form-container {
+  background: #ffffff;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  margin-top: 1.5rem;
+  
+}
+
+.project-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+
+  .form-group {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+
+    label {
+      flex: 1;
+      font-weight: 600;
+      color: #333;
+      text-align: right;
+    }
+
+    input,
+    textarea {
+      flex: 2;
+      padding: 0.6rem 0.8rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      transition: all 0.2s ease-in-out;
+
+      &:focus {
+        border-color: #1a237e;
+        outline: none;
+        box-shadow: 0 0 4px rgba(26, 35, 126, 0.3);
+      }
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    /* Style react-select wrapper */
+    .css-b62m3t-container {
+      flex: 2;
+      font-size: 0.95rem;
+    }
+  }
+
+  /* Two-column layout for rows */
+  .form-row {
+    display: flex;
+    gap: 1.5rem;
+
+    .form-group {
+      flex: 1;
+      label {
+        text-align: left;
+      }
+    }
+  }
+
+  .buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1rem;
+
+    button {
+      padding: 0.7rem 1.5rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background-color 0.2s ease-in-out;
+
+      &:first-child {
+        background-color: #1a237e;
+        color: #fff;
+
+        &:hover {
+          background-color: #222c8a;
+        }
+      }
+
+      &.cancel {
+        background-color: #e0e0e0;
+        color: #333;
+
+        &:hover {
+          background-color: #ccc;
+        }
+      }
+    }
+  }
+}
+
+/* Optional - make form look good on smaller screens */
+@media (max-width: 768px) {
+  .project-form {
+    .form-group {
+      flex-direction: column;
+      align-items: flex-start;
+
+      label {
+        text-align: left;
+        margin-bottom: 0.3rem;
+      }
+
+      input,
+      textarea,
+      .css-b62m3t-container {
+        width: 100%;
+      }
+    }
+
+    .form-row {
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .buttons {
+      flex-direction: column;
+      align-items: stretch;
+
+      button {
+        width: 100%;
+      }
+    }
+  }
+}

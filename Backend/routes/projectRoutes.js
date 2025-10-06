@@ -1,26 +1,28 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const auth = require('../middleware/authMiddleware');
-const upload = require('../middleware/uploadMiddleware');
-
+const authMiddleware = require("../middlewares/authMiddleware");
+const upload = require("../middlewares/uploadMiddleware");
 const {
   createProject,
   getProjects,
-  getProjectById,
   updateProject,
-  deleteProject
-} = require('../controllers/projectController');
+  deleteProject,
+  getAllProjects,
+} = require("../controllers/projectController");
 
-router.use(auth);
+// ✅ Get all projects of logged-in user
+router.get("/", authMiddleware, getProjects);
 
-// For creating a project with an image
-router.post('/', upload.single('image'), createProject);
+// ✅ Create a project
+router.post("/", authMiddleware, upload.single("thumbnail"), createProject);
 
-// For updating project with optional new image
-router.put('/:id', upload.single('image'), updateProject);
+// ✅ Update project
+router.put("/:id", authMiddleware, upload.single("thumbnail"), updateProject);
 
-router.get('/', getProjects);
-router.get('/:id', getProjectById);
-router.delete('/:id', deleteProject);
+// ✅ Delete project
+router.delete("/:id", authMiddleware, deleteProject);
+
+// ✅ Admin: Get all projects
+router.get("/all", authMiddleware, getAllProjects);
 
 module.exports = router;

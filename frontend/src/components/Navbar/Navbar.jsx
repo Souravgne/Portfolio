@@ -13,7 +13,7 @@ const Navbar = () => {
   const isDashboard = location.pathname.startsWith("/dashboard");
 
   const menuItems = isDashboard
-    ? ["details", "projects", "experience", "skills", "about", "socials"]
+    ? ["details", "projects", "experience", "skills", "socials"]
     : ["home", "about", "work", "skills", "contact"];
 
   return (
