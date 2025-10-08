@@ -1,9 +1,10 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const skillSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  thumbnail: { type: String }, // image path or URL
+  thumbnail: { type: String },
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
 });
 
-module.exports = mongoose.model("Skill", skillSchema);
+const Skill = mongoose.model("Skill", skillSchema);
+export default Skill;

@@ -1,7 +1,7 @@
-const Skill = require("../models/Skill");
+import Skill from "../models/Skill.js";
 
 // CREATE
-exports.createSkill = async (req, res) => {
+export const createSkill = async (req, res) => {
   try {
     const { name } = req.body;
     const thumbnail = req.file ? `/uploads/${req.file.filename}` : null;
@@ -19,8 +19,8 @@ exports.createSkill = async (req, res) => {
   }
 };
 
-// READ (All for current user)
-exports.getSkills = async (req, res) => {
+// READ
+export const getSkills = async (req, res) => {
   try {
     const skills = await Skill.find({ createdBy: req.user.userId });
     res.json(skills);
@@ -30,7 +30,7 @@ exports.getSkills = async (req, res) => {
 };
 
 // UPDATE
-exports.updateSkill = async (req, res) => {
+export const updateSkill = async (req, res) => {
   try {
     const updateData = { name: req.body.name };
     if (req.file) updateData.thumbnail = `/uploads/${req.file.filename}`;
@@ -48,7 +48,7 @@ exports.updateSkill = async (req, res) => {
 };
 
 // DELETE
-exports.deleteSkill = async (req, res) => {
+export const deleteSkill = async (req, res) => {
   try {
     await Skill.findOneAndDelete({
       _id: req.params.id,

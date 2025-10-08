@@ -1,14 +1,16 @@
-const express = require("express");
-const router = express.Router();
-const authMiddleware = require("../middlewares/authMiddleware");
-const upload = require("../middlewares/uploadMiddleware");
-const {
+// routes/projectRoutes.js
+import express from "express";
+import authMiddleware from "../middlewares/authMiddleware.js";
+import upload from "../middlewares/uploadMiddleware.js";
+import {
   createProject,
   getProjects,
   updateProject,
   deleteProject,
   getAllProjects,
-} = require("../controllers/projectController");
+} from "../controllers/projectController.js";
+
+const router = express.Router();
 
 // ✅ Get all projects of logged-in user
 router.get("/", authMiddleware, getProjects);
@@ -25,4 +27,4 @@ router.delete("/:id", authMiddleware, deleteProject);
 // ✅ Admin: Get all projects
 router.get("/all", authMiddleware, getAllProjects);
 
-module.exports = router;
+export default router;

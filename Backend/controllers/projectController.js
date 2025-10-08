@@ -1,7 +1,8 @@
-const Project = require("../models/Project");
+// controllers/projectController.js
+import Project from "../models/Project.js";
 
 // ✅ Create a new project
-exports.createProject = async (req, res) => {
+export const createProject = async (req, res) => {
   try {
     const userId = req.user.id;
     const {
@@ -38,7 +39,7 @@ exports.createProject = async (req, res) => {
 };
 
 // ✅ Get all projects for current user
-exports.getProjects = async (req, res) => {
+export const getProjects = async (req, res) => {
   try {
     const userId = req.user.id;
     const projects = await Project.find({ user: userId }).sort({
@@ -51,7 +52,7 @@ exports.getProjects = async (req, res) => {
 };
 
 // ✅ Update project
-exports.updateProject = async (req, res) => {
+export const updateProject = async (req, res) => {
   try {
     const userId = req.user.id;
     const projectId = req.params.id;
@@ -82,7 +83,7 @@ exports.updateProject = async (req, res) => {
 };
 
 // ✅ Delete project
-exports.deleteProject = async (req, res) => {
+export const deleteProject = async (req, res) => {
   try {
     const userId = req.user.id;
     const projectId = req.params.id;
@@ -103,7 +104,7 @@ exports.deleteProject = async (req, res) => {
 };
 
 // ✅ Admin: Get all projects (optional)
-exports.getAllProjects = async (req, res) => {
+export const getAllProjects = async (req, res) => {
   try {
     const projects = await Project.find().populate("user", "email");
     res.json(projects);

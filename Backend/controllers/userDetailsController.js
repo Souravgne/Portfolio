@@ -1,20 +1,15 @@
-const UserDetails = require("../models/UserDetails");
-const path = require("path");
-const fs = require("fs");
+// controllers/userDetailsController.js
+import UserDetails from "../models/UserDetails.js";
+import path from "path";
+import fs from "fs";
 
 // ✅ Create or Update User Details
-exports.createOrUpdateUserDetails = async (req, res) => {
+export const createOrUpdateUserDetails = async (req, res) => {
   try {
     const userId = req.user.id; // from authMiddleware
     const { fullName, email, phone, address, bio } = req.body;
 
-    const updateData = {
-      fullName,
-      email,
-      phone,
-      address,
-      bio,
-    };
+    const updateData = { fullName, email, phone, address, bio };
 
     // handle files
     if (req.files) {
@@ -40,7 +35,7 @@ exports.createOrUpdateUserDetails = async (req, res) => {
 };
 
 // ✅ Get User Details
-exports.getUserDetails = async (req, res) => {
+export const getUserDetails = async (req, res) => {
   try {
     const userId = req.user.id;
     const userDetails = await UserDetails.findOne({ user: userId });
@@ -53,7 +48,7 @@ exports.getUserDetails = async (req, res) => {
 };
 
 // ✅ Delete User Details
-exports.deleteUserDetails = async (req, res) => {
+export const deleteUserDetails = async (req, res) => {
   try {
     const userId = req.user.id;
     const userDetails = await UserDetails.findOneAndDelete({ user: userId });
@@ -67,8 +62,8 @@ exports.deleteUserDetails = async (req, res) => {
   }
 };
 
-// ✅ Get All Users (Admin use)
-exports.getAllUserDetails = async (req, res) => {
+// ✅ Get All Users (Admin)
+export const getAllUserDetails = async (req, res) => {
   try {
     const allUsers = await UserDetails.find().populate("user", "email");
     res.status(200).json(allUsers);

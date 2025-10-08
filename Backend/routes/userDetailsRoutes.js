@@ -1,13 +1,15 @@
-const express = require("express");
-const router = express.Router();
-const authMiddleware = require("../middlewares/authMiddleware");
-const upload = require("../middlewares/uploadMiddleware");
-const {
+// routes/userDetailsRoutes.js
+import express from "express";
+import authMiddleware from "../middlewares/authMiddleware.js";
+import upload from "../middlewares/uploadMiddleware.js";
+import {
   createOrUpdateUserDetails,
   getUserDetails,
   deleteUserDetails,
   getAllUserDetails,
-} = require("../controllers/userDetailsController");
+} from "../controllers/userDetailsController.js";
+
+const router = express.Router();
 
 // Get current user details
 router.get("/", authMiddleware, getUserDetails);
@@ -29,4 +31,4 @@ router.delete("/", authMiddleware, deleteUserDetails);
 // Admin: get all users’ details
 router.get("/all", authMiddleware, getAllUserDetails);
 
-module.exports = router;
+export default router;

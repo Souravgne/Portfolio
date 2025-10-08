@@ -1,10 +1,11 @@
-const mongoose = require("mongoose");
+// models/UserDetails.js
+import mongoose from "mongoose";
 
 const userDetailsSchema = new mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User", // assuming you have a User model
+      ref: "User", 
       required: true,
       unique: true,
     },
@@ -13,10 +14,11 @@ const userDetailsSchema = new mongoose.Schema(
     phone: String,
     address: String,
     bio: String,
-    profileImage: String, // file path or URL
-    resume: String, // file path or URL
+    profileImage: String, 
+    resume: String,
   },
   { timestamps: true }
 );
 
-module.exports = mongoose.model("UserDetails", userDetailsSchema);
+const UserDetails = mongoose.model("UserDetails", userDetailsSchema);
+export default UserDetails;

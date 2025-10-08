@@ -1,7 +1,8 @@
-const Experience = require("../models/Experience");
+// controllers/experienceController.js
+import Experience from "../models/Experience.js";
 
 // Create
-exports.createExperience = async (req, res) => {
+export const createExperience = async (req, res) => {
   try {
     const experience = new Experience({
       ...req.body,
@@ -15,7 +16,7 @@ exports.createExperience = async (req, res) => {
 };
 
 // Read All (for logged-in user)
-exports.getExperiences = async (req, res) => {
+export const getExperiences = async (req, res) => {
   try {
     const experiences = await Experience.find({ createdBy: req.user.userId });
     res.json(experiences);
@@ -25,7 +26,7 @@ exports.getExperiences = async (req, res) => {
 };
 
 // Update
-exports.updateExperience = async (req, res) => {
+export const updateExperience = async (req, res) => {
   try {
     const exp = await Experience.findOneAndUpdate(
       { _id: req.params.id, createdBy: req.user.userId },
@@ -39,7 +40,7 @@ exports.updateExperience = async (req, res) => {
 };
 
 // Delete
-exports.deleteExperience = async (req, res) => {
+export const deleteExperience = async (req, res) => {
   try {
     await Experience.findOneAndDelete({
       _id: req.params.id,

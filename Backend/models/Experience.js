@@ -1,4 +1,5 @@
-const mongoose = require("mongoose");
+// models/Experience.js
+import mongoose from "mongoose";
 
 const experienceSchema = new mongoose.Schema({
   role: { type: String, required: true },
@@ -12,4 +13,6 @@ const experienceSchema = new mongoose.Schema({
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
 });
 
-module.exports = mongoose.model("Experience", experienceSchema);
+const Experience = mongoose.model("Experience", experienceSchema);
+
+export default Experience;
