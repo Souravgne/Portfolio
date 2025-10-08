@@ -12,7 +12,7 @@ import {
 const router = express.Router();
 
 // Get current user details
-router.get("/", authMiddleware, getUserDetails);
+router.get("/", getUserDetails);
 
 // Create or update details
 router.post(
@@ -29,6 +29,6 @@ router.post(
 router.delete("/", authMiddleware, deleteUserDetails);
 
 // Admin: get all users’ details
-router.get("/all", authMiddleware, getAllUserDetails);
+router.get("/all", getAllUserDetails);
 
 export default router;
