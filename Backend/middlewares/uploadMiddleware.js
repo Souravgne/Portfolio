@@ -18,8 +18,7 @@ const fileFilter = (req, file, cb) => {
   const docTypes = /pdf|doc|docx/;
   const extname = path.extname(file.originalname).toLowerCase();
 
-  // Allow image for profileImage, document for resume
-  if (file.fieldname === "profileImage") {
+  if (file.fieldname === "profileImage" || file.fieldname === "thumbnail") {
     if (imageTypes.test(extname)) cb(null, true);
     else
       cb(
