@@ -1,21 +1,42 @@
+.user-details-wrapper {
+  max-width: 1100px;
+  margin: 2rem auto;
+  padding: 1rem;
+
+  h2 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+  }
+}
+
+.user-details-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+}
+
+/* Card Styling */
+.user-details-card {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.08);
+  flex: 2;
+}
+
 .user-details-form {
   display: flex;
   flex-direction: column;
-  max-width: 900px;
-  margin: 2rem auto;
   gap: 1rem;
-
-  .form-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
 
   .form-group {
     display: flex;
-    flex-direction: column; // label above input on small screens
-    flex: 1;
-    min-width: 250px;
+    flex-direction: column;
 
     label {
       font-weight: 600;
@@ -36,42 +57,73 @@
     }
   }
 
-  button {
-    width: fit-content;
-    padding: 0.75rem 1.5rem;
-    background-color: #1a237e;
-    color: white;
-    font-weight: bold;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 1rem;
-
-    &:hover {
-      background-color: #222c8a;
-    }
+  .resume-link {
+    color: #1a237e;
+    text-decoration: underline;
+    margin-top: 0.5rem;
   }
+}
 
-  @media (min-width: 768px) {
-    .form-group {
-      flex-direction: row; // label and input in a row on larger screens
-      align-items: center;
+.form-button {
+  width: fit-content;
+  padding: 0.75rem 1.5rem;
+  background-color: #1a237e;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 1rem;
 
-      label {
-        width: 150px;
-        margin-bottom: 0;
-        margin-right: 1rem;
+  &:hover {
+    background-color: #222c8a;
+  }
+}
+
+.edit-button {
+  margin-top: 1.5rem;
+}
+
+/* Right-side Image */
+.image-preview {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;    
+  gap: 1rem;    
+
+  .profile-preview {
+    width: 200px;
+    height: 200px;
+    border-radius: 10px;
+    object-fit: cover;
+    border: 2px solid #ccc;
+    transition: transform 0.2s ease;
+
+    &.clickable {
+      cursor: pointer;
+      &:hover {
+        transform: scale(1.02);
+        border-color: #1a237e;
       }
-
-      input,
-      textarea {
-        flex: 1;
-      }
-    }
-
-    .form-row {
-      display: flex;
-      gap: 2rem;
     }
   }
 }
+
+.resume-button {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  background-color: #1a237e;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 1rem;
+  text-decoration: none;
+
+  &:hover {
+    background-color: #222c8a;
+  }
+}
+

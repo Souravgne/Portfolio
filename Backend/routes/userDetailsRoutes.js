@@ -1,34 +1,27 @@
-// routes/userDetailsRoutes.js
 import express from "express";
-import authMiddleware from "../middlewares/authMiddleware.js";
-import upload from "../middlewares/uploadMiddleware.js";
+import multer from "multer";
 import {
   createOrUpdateUserDetails,
   getUserDetails,
-  deleteUserDetails,
-  getAllUserDetails,
+  deleteUserDetails
 } from "../controllers/userDetailsController.js";
 
 const router = express.Router();
 
-// Get current user details
+// Setup Multer for file uploads
+const upload = multer({ dest: "uploads/" });
+
 router.get("/", getUserDetails);
 
-// Create or update details
 router.post(
   "/",
-  authMiddleware,
   upload.fields([
     { name: "profileImage", maxCount: 1 },
-    { name: "resume", maxCount: 1 },
+    { name: "resume", maxCount: 1 }
   ]),
   createOrUpdateUserDetails
 );
 
-// Delete user details
-router.delete("/", authMiddleware, deleteUserDetails);
-
-// Admin: get all users’ details
-router.get("/all", getAllUserDetails);
+router.delete("/", deleteUserDetails);
 
 export default router;

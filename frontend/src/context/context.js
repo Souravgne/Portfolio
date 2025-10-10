@@ -16,11 +16,9 @@ export const DataProvider = ({ children }) => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const [projectsRes, skillsRes, userRes] = await Promise.all([
-          // axios.get(`${process.env.REACT_APP_BASE_URL}/api/projects`),
-          // axios.get(`${process.env.REACT_APP_BASE_URL}/api/skills`),
-          axios.get(`http://localhost:5000/api/userDetails/all`),
-        ]);
+      const userRes = await axios.get(`http://localhost:5000/api/userDetails`);
+
+
 
         // setProjects(projectsRes.data);
         // setSkills(skillsRes.data);
@@ -38,9 +36,9 @@ export const DataProvider = ({ children }) => {
 
   const value = {
     projects,
-    setProjects,
+    // setProjects,
     skills,
-    setSkills,
+    // setSkills,
     userDetails,
     setUserDetails,
     loading,

@@ -13,13 +13,45 @@ const Work = () => {
   const [animateCard, setAnimateCard] = useState({ y: 0, opacity: 1 });
 
   useEffect(() => {
-    const query = '*[_type == "works"]';
+  const dummyData = [
+    {
+      title: 'Weather App',
+      description: 'A weather app built using React and OpenWeatherMap API.',
+      imgUrl: 'https://via.placeholder.com/400x300', // Replace with a real image URL or local import
+      projectLink: 'https://example.com/weather-app',
+      codeLink: 'https://github.com/username/weather-app',
+      tags: ['React JS', 'Web App'],
+    },
+    {
+      title: 'Portfolio Website',
+      description: 'Personal portfolio website showcasing my design and development skills.',
+      imgUrl: 'https://via.placeholder.com/400x300',
+      projectLink: 'https://example.com/portfolio',
+      codeLink: 'https://github.com/username/portfolio',
+      tags: ['UI/UX', 'React JS'],
+    },
+    {
+      title: 'Mobile Expense Tracker',
+      description: 'Cross-platform mobile app to track daily expenses.',
+      imgUrl: 'https://via.placeholder.com/400x300',
+      projectLink: 'https://example.com/expense-tracker',
+      codeLink: 'https://github.com/username/expense-tracker',
+      tags: ['Mobile App'],
+    },
+    {
+      title: 'Task Manager',
+      description: 'A simple and effective task management web app.',
+      imgUrl: 'https://via.placeholder.com/400x300',
+      projectLink: 'https://example.com/task-manager',
+      codeLink: 'https://github.com/username/task-manager',
+      tags: ['Web App'],
+    },
+  ];
 
-    client.fetch(query).then((data) => {
-      setWorks(data);
-      setFilterWork(data);
-    });
-  }, []);
+  setWorks(dummyData);
+  setFilterWork(dummyData);
+}, []);
+
 
   const handleWorkFilter = (item) => {
     setActiveFilter(item);
@@ -62,7 +94,7 @@ const Work = () => {
             <div
               className="app__work-img app__flex"
             >
-              <img src={urlFor(work.imgUrl)} alt={work.name} />
+              <img src={work.imgUrl} alt={work.name} />
 
               <motion.div
                 whileHover={{ opacity: [0, 1] }}
