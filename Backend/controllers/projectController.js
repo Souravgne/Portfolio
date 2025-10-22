@@ -4,7 +4,13 @@ import Project from "../models/Project.js";
 // ✅ Create a new project
 export const createProject = async (req, res) => {
   try {
-    const userId = req.user.id;
+    console.log("Request body:", req.user?.userId);
+    const userId = req.user?.userId;
+    console.log("Creating project for user ID:", userId);
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized: User not found" });
+    }
+
     const {
       title,
       description,
@@ -16,32 +22,39 @@ export const createProject = async (req, res) => {
     } = req.body;
 
     const project = new Project({
-      user: userId,
-      title,
-      description,
-      techStack: techStack?.split(",").map((t) => t.trim()) || [],
-      tags,
-      githubLink,
-      liveLink,
-      additionalInfo,
+    user: userId,
+    title,
+    description,
+    techStack: techStack?.split(",").map((t) => t.trim()) || [],
+    tags,
+    githubLink,
+    liveLink,
+    additionalInfo,
     });
 
-    if (req.file) {
-      project.thumbnailUrl = `/uploads/${req.file.filename}`;
-    }
+
+    // 🛑 Defensive check
+    if (req.file?.filename) {
+    project.thumbnailUrl = `/uploads/${req.file.filename}`;
+  }
+
 
     await project.save();
     res.status(201).json(project);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Error creating project" });
+    console.error("🔥 Error in createProject:", err);
+    res.status(500).json({
+      message: "Error creating project",
+      error: err.message,
+    });
   }
 };
+
 
 // ✅ Get all projects for current user
 export const getProjects = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.userId;
     const projects = await Project.find({ user: userId }).sort({
       createdAt: -1,
     });

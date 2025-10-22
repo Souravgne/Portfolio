@@ -3,8 +3,8 @@ import axios from "axios";
 import { toast } from "react-hot-toast";
 import "./UserDetails.scss";
 import { usePortfolio } from "../../context/context";
+import { BASE_URL } from "../../config";
 
-const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 const UserDetails = () => {
   const { userDetails, loading } = usePortfolio();

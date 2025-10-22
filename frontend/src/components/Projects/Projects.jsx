@@ -2,28 +2,16 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import ProjectForm from "./ProjectForm";
+import { BASE_URL } from "../../config";
+import { usePortfolio } from "../../context/context";
+
 import "./Projects.scss";
 
 const Projects = () => {
-  const [projects, setProjects] = useState([]);
+  const { projects, loading } = usePortfolio();
   const [showForm, setShowForm] = useState(false);
   const [editProject, setEditProject] = useState(null);
 
-  const fetchProjects = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const res = await axios.get(`${BASE_URL}/api/projects`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setProjects(res.data);
-    } catch (err) {
-      console.error("Failed to fetch projects:", err);
-    }
-  };
-
-  useEffect(() => {
-    fetchProjects();
-  }, []);
 
   const handleAddNew = () => {
     setEditProject(null);
@@ -56,6 +44,7 @@ const Projects = () => {
   };
 
   return (
+    console.log("Projects in Projects component:", projects),
     <div className="projects-container">
       <div className="projects-header">
         <h2>Projects</h2>
