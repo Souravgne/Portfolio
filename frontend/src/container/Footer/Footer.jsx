@@ -3,12 +3,13 @@ import React, { useState } from 'react';
 import { images } from '../../constants';
 import { AppWrap, MotionWrap } from '../../wrapper';
 import { client } from '../../client';
+import { usePortfolio } from '../../context/context';
 import './Footer.scss';
 
 const Footer = () => {
+  const { userDetails, loading } = usePortfolio();
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
-  const [loading, setLoading] = useState(false);
 
   const { username, email, message } = formData;
 
@@ -42,11 +43,11 @@ const Footer = () => {
       <div className="app__footer-cards">
         <div className="app__footer-card ">
           <img src={images.email} alt="email" />
-          <a href="mailto:hello@micael.com" className="p-text">hello@micael.com</a>
+          <a href="mailto:hello@micael.com" className="p-text">{userDetails.email}</a>
         </div>
         <div className="app__footer-card">
           <img src={images.mobile} alt="phone" />
-          <a href="tel:+1 (123) 456-7890" className="p-text">+1 (123) 456-7890</a>
+          <a href="tel:+1 (123) 456-7890" className="p-text">+91 {userDetails.phone}</a>
         </div>
       </div>
       {!isFormSubmitted ? (

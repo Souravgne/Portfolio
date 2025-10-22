@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 
 import { AppWrap } from '../../wrapper';
 import { images } from '../../constants';
-import { usePortfolio } from '../../context/context'; // ✅ Import context
+import { usePortfolio } from '../../context/context';
 
 import './Header.scss';
 
@@ -19,8 +19,7 @@ const scaleVariants = {
 };
 
 const Header = () => {
-  const { userDetails, loading } = usePortfolio(); // ✅ Use context
-  console.log("User Details in Header:", userDetails);
+  const { userDetails, loading } = usePortfolio();
   return (
     <div className="app__header app__flex">
       <motion.div
