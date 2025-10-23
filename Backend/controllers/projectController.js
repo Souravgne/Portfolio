@@ -51,18 +51,22 @@ export const createProject = async (req, res) => {
 };
 
 
-// ✅ Get all projects for current user
+
+// ✅ Get all projects (no user filtering)
 export const getProjects = async (req, res) => {
   try {
-    const userId = req.user.userId;
-    const projects = await Project.find({ user: userId }).sort({
-      createdAt: -1,
-    });
+    const projects = await Project.find().sort({ createdAt: -1 }); // Fetch all
     res.json(projects);
   } catch (err) {
-    res.status(500).json({ message: "Error fetching projects" });
+    console.error("🔥 Error fetching projects:", err);
+    res.status(500).json({
+      message: "Error fetching projects",
+      error: err.message,
+    });
   }
 };
+
+
 
 // ✅ Update project
 export const updateProject = async (req, res) => {

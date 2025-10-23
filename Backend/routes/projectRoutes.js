@@ -13,7 +13,7 @@ import {
 const router = express.Router();
 
 // ✅ Get all projects of logged-in user
-router.get("/", authMiddleware, getProjects);
+router.get("/", getProjects);
 
 // ✅ Create a project
 router.post("/", authMiddleware, upload.single("thumbnail"), createProject);

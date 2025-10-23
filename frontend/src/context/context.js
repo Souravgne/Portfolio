@@ -1,6 +1,7 @@
 // context.js
 import React, { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
+import { BASE_URL } from "../config";
 
 const Context = createContext();
 
@@ -16,16 +17,22 @@ export const DataProvider = ({ children }) => {
     const fetchData = async () => {
       try {
         setLoading(true);
-      const userRes = await axios.get(`http://localhost:5000/api/userDetails`);
 
+        // Fetch user details and projects in parallel
+        const [userRes, projectsRes] = await Promise.all([
+          axios.get(`${BASE_URL}/api/userDetails`),
+          axios.get(`${BASE_URL}/api/projects`)
+        ]);
 
-
-        // setProjects(projectsRes.data);
-        // setSkills(skillsRes.data);
+        // Update state
         setUserDetails(userRes.data);
-        console.log("User Details:", userDetails);
+        setProjects(projectsRes.data);
+
+        console.log("✅ User Details:", userRes.data);
+        console.log("✅ Projects:", projectsRes.data);
+
       } catch (err) {
-        console.error("Error fetching portfolio data:", err);
+        console.error("❌ Error fetching portfolio data:", err);
       } finally {
         setLoading(false);
       }
@@ -36,9 +43,9 @@ export const DataProvider = ({ children }) => {
 
   const value = {
     projects,
-    // setProjects,
+    setProjects,
     skills,
-    // setSkills,
+    setSkills,
     userDetails,
     setUserDetails,
     loading,

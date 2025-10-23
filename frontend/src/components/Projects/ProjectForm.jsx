@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import Select from "react-select";
 import { toast } from "react-hot-toast";
+import { BASE_URL } from "../../config";
 
 const techOptions = [
   { value: "React", label: "React" },

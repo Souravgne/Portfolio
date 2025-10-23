@@ -3,55 +3,24 @@ import { AiFillEye, AiFillGithub } from 'react-icons/ai';
 import { motion } from 'framer-motion';
 
 import { AppWrap, MotionWrap } from '../../wrapper';
-import { urlFor, client } from '../../client';
+import { usePortfolio } from "../../context/context";
+
 import './Work.scss';
 
 const Work = () => {
+  const { projects, loading } = usePortfolio();
   const [works, setWorks] = useState([]);
   const [filterWork, setFilterWork] = useState([]);
   const [activeFilter, setActiveFilter] = useState('All');
   const [animateCard, setAnimateCard] = useState({ y: 0, opacity: 1 });
 
+  // ✅ Load projects when fetched
   useEffect(() => {
-  const dummyData = [
-    {
-      title: 'Weather App',
-      description: 'A weather app built using React and OpenWeatherMap API.',
-      imgUrl: 'https://via.placeholder.com/400x300', // Replace with a real image URL or local import
-      projectLink: 'https://example.com/weather-app',
-      codeLink: 'https://github.com/username/weather-app',
-      tags: ['React JS', 'Web App'],
-    },
-    {
-      title: 'Portfolio Website',
-      description: 'Personal portfolio website showcasing my design and development skills.',
-      imgUrl: 'https://via.placeholder.com/400x300',
-      projectLink: 'https://example.com/portfolio',
-      codeLink: 'https://github.com/username/portfolio',
-      tags: ['UI/UX', 'React JS'],
-    },
-    {
-      title: 'Mobile Expense Tracker',
-      description: 'Cross-platform mobile app to track daily expenses.',
-      imgUrl: 'https://via.placeholder.com/400x300',
-      projectLink: 'https://example.com/expense-tracker',
-      codeLink: 'https://github.com/username/expense-tracker',
-      tags: ['Mobile App'],
-    },
-    {
-      title: 'Task Manager',
-      description: 'A simple and effective task management web app.',
-      imgUrl: 'https://via.placeholder.com/400x300',
-      projectLink: 'https://example.com/task-manager',
-      codeLink: 'https://github.com/username/task-manager',
-      tags: ['Web App'],
-    },
-  ];
-
-  setWorks(dummyData);
-  setFilterWork(dummyData);
-}, []);
-
+    if (!loading && projects?.length > 0) {
+      setWorks(projects);
+      setFilterWork(projects);
+    }
+  }, [projects, loading]);
 
   const handleWorkFilter = (item) => {
     setActiveFilter(item);
@@ -59,7 +28,6 @@ const Work = () => {
 
     setTimeout(() => {
       setAnimateCard([{ y: 0, opacity: 1 }]);
-
       if (item === 'All') {
         setFilterWork(works);
       } else {
@@ -68,16 +36,24 @@ const Work = () => {
     }, 500);
   };
 
+  if (loading) {
+    return <p className="p-text">Loading projects...</p>;
+  }
+
   return (
     <>
-      <h2 className="head-text">My Creative <span>Portfolio</span> Section</h2>
+      <h2 className="head-text">
+        My Creative <span>Portfolio</span> Section
+      </h2>
 
       <div className="app__work-filter">
         {['UI/UX', 'Web App', 'Mobile App', 'React JS', 'All'].map((item, index) => (
           <div
             key={index}
             onClick={() => handleWorkFilter(item)}
-            className={`app__work-filter-item app__flex p-text ${activeFilter === item ? 'item-active' : ''}`}
+            className={`app__work-filter-item app__flex p-text ${
+              activeFilter === item ? 'item-active' : ''
+            }`}
           >
             {item}
           </div>
@@ -91,46 +67,49 @@ const Work = () => {
       >
         {filterWork.map((work, index) => (
           <div className="app__work-item app__flex" key={index}>
-            <div
-              className="app__work-img app__flex"
-            >
-              <img src={work.imgUrl} alt={work.name} />
+            <div className="app__work-img app__flex">
+              <img src={work.imgUrl} alt={work.title} />
 
               <motion.div
                 whileHover={{ opacity: [0, 1] }}
                 transition={{ duration: 0.25, ease: 'easeInOut', staggerChildren: 0.5 }}
                 className="app__work-hover app__flex"
               >
-                <a href={work.projectLink} target="_blank" rel="noreferrer">
-
-                  <motion.div
-                    whileInView={{ scale: [0, 1] }}
-                    whileHover={{ scale: [1, 0.90] }}
-                    transition={{ duration: 0.25 }}
-                    className="app__flex"
-                  >
-                    <AiFillEye />
-                  </motion.div>
-                </a>
-                <a href={work.codeLink} target="_blank" rel="noreferrer">
-                  <motion.div
-                    whileInView={{ scale: [0, 1] }}
-                    whileHover={{ scale: [1, 0.90] }}
-                    transition={{ duration: 0.25 }}
-                    className="app__flex"
-                  >
-                    <AiFillGithub />
-                  </motion.div>
-                </a>
+                {work.liveLink && (
+                  <a href={work.liveLink} target="_blank" rel="noreferrer">
+                    <motion.div
+                      whileInView={{ scale: [0, 1] }}
+                      whileHover={{ scale: [1, 0.9] }}
+                      transition={{ duration: 0.25 }}
+                      className="app__flex"
+                    >
+                      <AiFillEye />
+                    </motion.div>
+                  </a>
+                )}
+                {work.githubLink && (
+                  <a href={work.githubLink} target="_blank" rel="noreferrer">
+                    <motion.div
+                      whileInView={{ scale: [0, 1] }}
+                      whileHover={{ scale: [1, 0.9] }}
+                      transition={{ duration: 0.25 }}
+                      className="app__flex"
+                    >
+                      <AiFillGithub />
+                    </motion.div>
+                  </a>
+                )}
               </motion.div>
             </div>
 
             <div className="app__work-content app__flex">
               <h4 className="bold-text">{work.title}</h4>
-              <p className="p-text" style={{ marginTop: 10 }}>{work.description}</p>
+              <p className="p-text" style={{ marginTop: 10 }}>
+                {work.description}
+              </p>
 
               <div className="app__work-tag app__flex">
-                <p className="p-text">{work.tags[0]}</p>
+                <p className="p-text">{work.tags?.[0]}</p>
               </div>
             </div>
           </div>
