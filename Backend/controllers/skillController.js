@@ -1,5 +1,7 @@
 import Skill from "../models/Skill.js";
 
+const FIXED_USER_ID = "portfolio-user";
+
 // CREATE
 export const createSkill = async (req, res) => {
   try {
@@ -9,12 +11,13 @@ export const createSkill = async (req, res) => {
     const skill = new Skill({
       name,
       thumbnail,
-      createdBy: req.user.userId,
+      createdBy: FIXED_USER_ID,
     });
 
     await skill.save();
     res.status(201).json(skill);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: "Error creating skill", error });
   }
 };
@@ -22,9 +25,10 @@ export const createSkill = async (req, res) => {
 // READ
 export const getSkills = async (req, res) => {
   try {
-    const skills = await Skill.find({ createdBy: req.user.userId });
+    const skills = await Skill.find({ createdBy: FIXED_USER_ID });
     res.json(skills);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: "Error fetching skills", error });
   }
 };
@@ -36,13 +40,17 @@ export const updateSkill = async (req, res) => {
     if (req.file) updateData.thumbnail = `/uploads/${req.file.filename}`;
 
     const updatedSkill = await Skill.findOneAndUpdate(
-      { _id: req.params.id, createdBy: req.user.userId },
+      { _id: req.params.id, createdBy: FIXED_USER_ID },
       updateData,
       { new: true }
     );
 
+    if (!updatedSkill)
+      return res.status(404).json({ message: "Skill not found" });
+
     res.json(updatedSkill);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: "Error updating skill", error });
   }
 };
@@ -50,12 +58,17 @@ export const updateSkill = async (req, res) => {
 // DELETE
 export const deleteSkill = async (req, res) => {
   try {
-    await Skill.findOneAndDelete({
+    const deleted = await Skill.findOneAndDelete({
       _id: req.params.id,
-      createdBy: req.user.userId,
+      createdBy: FIXED_USER_ID,
     });
+
+    if (!deleted)
+      return res.status(404).json({ message: "Skill not found" });
+
     res.json({ message: "Skill deleted successfully" });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: "Error deleting skill", error });
   }
 };
