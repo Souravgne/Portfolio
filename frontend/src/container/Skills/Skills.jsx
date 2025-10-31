@@ -5,26 +5,24 @@ import axios from "axios";
 
 import { AppWrap, MotionWrap } from "../../wrapper";
 import "./Skills.scss";
-import { BASE_URL } from './../../config';
-
+import { BASE_URL } from "./../../config";
 
 const Skills = () => {
-  const [experiences, setExperiences] = useState([]); // keep for future use
+  const [experiences, setExperiences] = useState([]);
   const [skills, setSkills] = useState([]);
 
   useEffect(() => {
-    // Fetch skills from backend API
+    // Fetch skills
     const fetchSkills = async () => {
       try {
         const res = await axios.get(`${BASE_URL}/api/skills`);
-        // Transform if necessary (depending on backend structure)
         const formatted = res.data.map((skill) => ({
           _id: skill._id,
           name: skill.name,
           icon: skill.thumbnail
             ? `${BASE_URL}${skill.thumbnail}`
-            : "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/code/code-original.svg", // fallback
-          bgColor: "#edf2f8", // default background color
+            : "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/code/code-original.svg",
+          bgColor: "#edf2f8",
         }));
         setSkills(formatted);
       } catch (error) {
@@ -32,7 +30,36 @@ const Skills = () => {
       }
     };
 
+    // Fetch experiences
+    const fetchExperiences = async () => {
+      try {
+        const res = await axios.get(`${BASE_URL}/api/experiences`);
+        // Transform into { year, works: [{name, company, desc}] } format
+        const formatted = res.data.reduce((acc, exp) => {
+          const year = new Date(exp.duration.from).getFullYear();
+          const work = {
+            name: exp.role,
+            company: exp.company,
+            desc: exp.description,
+          };
+          const existing = acc.find((item) => item.year === year);
+          if (existing) {
+            existing.works.push(work);
+          } else {
+            acc.push({ year, works: [work] });
+          }
+          return acc;
+        }, []);
+        // Sort by year descending
+        formatted.sort((a, b) => b.year - a.year);
+        setExperiences(formatted);
+      } catch (error) {
+        console.error("Error fetching experiences:", error);
+      }
+    };
+
     fetchSkills();
+    fetchExperiences();
   }, []);
 
   return (
@@ -40,7 +67,7 @@ const Skills = () => {
       <h2 className="head-text">Skills & Experiences</h2>
 
       <div className="app__skills-container">
-        {/* ✅ Skills List */}
+        {/* Skills List */}
         <motion.div className="app__skills-list">
           {skills.length === 0 ? (
             <p className="p-text">Loading skills...</p>
@@ -64,10 +91,10 @@ const Skills = () => {
           )}
         </motion.div>
 
-        {/* ✅ Placeholder for Experiences (you can later fetch real ones) */}
+        {/* Experiences */}
         <div className="app__skills-exp">
           {experiences.length === 0 ? (
-            <p className="p-text">No experiences yet</p>
+            <p className="p-text">Loading experiences...</p>
           ) : (
             experiences.map((experience) => (
               <motion.div
@@ -80,11 +107,11 @@ const Skills = () => {
                 <motion.div className="app__skills-exp-works">
                   {experience.works.map((work) => (
                     <motion.div
-                      key={work.name}
+                      key={work.name + work.company}
                       whileInView={{ opacity: [0, 1] }}
                       transition={{ duration: 0.5 }}
                       className="app__skills-exp-work"
-                      data-tooltip-id={work.name}
+                      data-tooltip-id={work.name + work.company}
                       data-tooltip-content={work.desc}
                     >
                       <h4 className="bold-text">{work.name}</h4>

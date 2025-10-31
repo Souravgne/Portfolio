@@ -1,53 +1,70 @@
 // controllers/experienceController.js
 import Experience from "../models/Experience.js";
 
-// Create
+const FIXED_USER_ID = "portfolio-user";
+
+// Helper to get userId (from req.user or fallback to fixed)
+const getUserId = (req) => req.user?.userId || FIXED_USER_ID;
+
+// Create a new experience
 export const createExperience = async (req, res) => {
   try {
     const experience = new Experience({
       ...req.body,
-      createdBy: req.user.userId,
+      createdBy: getUserId(req),
     });
     await experience.save();
     res.status(201).json(experience);
   } catch (error) {
-    res.status(500).json({ message: "Error creating experience", error });
+    console.error("Create Experience Error:", error);
+    res.status(500).json({ message: "Failed to create experience", error });
   }
 };
 
-// Read All (for logged-in user)
+// Get all experiences for the logged-in user
 export const getExperiences = async (req, res) => {
   try {
-    const experiences = await Experience.find({ createdBy: req.user.userId });
-    res.json(experiences);
+    const experiences = await Experience.find({ createdBy: getUserId(req) });
+    res.status(200).json(experiences);
   } catch (error) {
-    res.status(500).json({ message: "Error fetching experiences", error });
+    console.error("Get Experiences Error:", error);
+    res.status(500).json({ message: "Failed to fetch experiences", error });
   }
 };
 
-// Update
+// Update an experience by ID
 export const updateExperience = async (req, res) => {
   try {
-    const exp = await Experience.findOneAndUpdate(
-      { _id: req.params.id, createdBy: req.user.userId },
+    const updatedExp = await Experience.findOneAndUpdate(
+      { _id: req.params.id, createdBy: getUserId(req) },
       req.body,
       { new: true }
     );
-    res.json(exp);
+    if (!updatedExp) {
+      return res.status(404).json({ message: "Experience not found" });
+    }
+    res.status(200).json(updatedExp);
   } catch (error) {
-    res.status(500).json({ message: "Error updating experience", error });
+    console.error("Update Experience Error:", error);
+    res.status(500).json({ message: "Failed to update experience", error });
   }
 };
 
-// Delete
+// Delete an experience by ID
 export const deleteExperience = async (req, res) => {
   try {
-    await Experience.findOneAndDelete({
+    const deletedExp = await Experience.findOneAndDelete({
       _id: req.params.id,
-      createdBy: req.user.userId,
+      createdBy: getUserId(req),
     });
-    res.json({ message: "Experience deleted successfully" });
+
+    if (!deletedExp) {
+      return res.status(404).json({ message: "Experience not found" });
+    }
+
+    res.status(200).json({ message: "Experience deleted successfully" });
   } catch (error) {
-    res.status(500).json({ message: "Error deleting experience", error });
+    console.error("Delete Experience Error:", error);
+    res.status(500).json({ message: "Failed to delete experience", error });
   }
 };

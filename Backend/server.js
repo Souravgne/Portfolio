@@ -30,7 +30,7 @@ app.use("/api/userDetails", userDetailsRoutes);
 // Newly added routes
 app.use("/api/socials", socialRoutes);
 app.use("/api/skills", skillsRoutes);
-app.use("/api/experience", experienceRoutes);
+app.use("/api/experiences", experienceRoutes);
 
 // Default Route
 app.get("/", (req, res) => {

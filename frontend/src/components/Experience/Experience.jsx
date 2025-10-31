@@ -1,20 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "./Experience.scss";
+import { BASE_URL } from "../../config";
 
 const Experience = () => {
-  const [experiences, setExperiences] = useState([
-    {
-      id: 1,
-      role: "",
-      company: "",
-      duration: { from: new Date("2023-01-01"), to: new Date() },
-      description: "",
-      techStack: [],
-    },
-  ]);
-
+  const [experiences, setExperiences] = useState([]);
   const [newExperience, setNewExperience] = useState({
     role: "",
     company: "",
@@ -22,6 +14,7 @@ const Experience = () => {
     description: "",
     techStack: [],
   });
+  const [editingExperience, setEditingExperience] = useState(null);
 
   const techOptions = [
     "React",
@@ -40,6 +33,19 @@ const Experience = () => {
     "SASS",
   ];
 
+  useEffect(() => {
+    fetchExperiences();
+  }, []);
+
+  const fetchExperiences = async () => {
+    try {
+      const res = await axios.get(`${BASE_URL}/api/experiences`);
+      setExperiences(res.data);
+    } catch (error) {
+      console.error("Error fetching experiences:", error);
+    }
+  };
+
   const handleTechSelect = (tech) => {
     setNewExperience((prev) => ({
       ...prev,
@@ -49,113 +55,113 @@ const Experience = () => {
     }));
   };
 
-  const handleEditChange = (id, field, value) => {
-    setExperiences((prev) =>
-      prev.map((exp) => (exp.id === id ? { ...exp, [field]: value } : exp))
-    );
+  const handleAddExperience = async () => {
+    if (!newExperience.role || !newExperience.company) return;
+
+    try {
+      const res = await axios.post(`${BASE_URL}/api/experiences`, newExperience);
+      setExperiences([...experiences, res.data]);
+      setNewExperience({
+        role: "",
+        company: "",
+        duration: { from: null, to: null },
+        description: "",
+        techStack: [],
+      });
+    } catch (error) {
+      console.error("Error creating experience:", error);
+    }
   };
 
-  const handleAddExperience = () => {
-    if (!newExperience.role || !newExperience.company) return;
-    setExperiences([...experiences, { ...newExperience, id: Date.now() }]);
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`${BASE_URL}/api/experiences/${id}`);
+      setExperiences(experiences.filter((exp) => exp._id !== id));
+    } catch (error) {
+      console.error("Error deleting experience:", error);
+    }
+  };
+
+  const handleEdit = (exp) => {
+    setEditingExperience(exp);
     setNewExperience({
-      role: "",
-      company: "",
-      duration: { from: null, to: null },
-      description: "",
-      techStack: [],
+      role: exp.role,
+      company: exp.company,
+      duration: exp.duration,
+      description: exp.description,
+      techStack: exp.techStack,
     });
   };
 
-  const handleDelete = (id) => {
-    setExperiences(experiences.filter((exp) => exp.id !== id));
+  const handleUpdate = async () => {
+    if (!editingExperience) return;
+
+    try {
+      const res = await axios.put(
+        `${BASE_URL}/api/experiences/${editingExperience._id}`,
+        newExperience
+      );
+      setExperiences(
+        experiences.map((exp) => (exp._id === res.data._id ? res.data : exp))
+      );
+      setEditingExperience(null);
+      setNewExperience({
+        role: "",
+        company: "",
+        duration: { from: null, to: null },
+        description: "",
+        techStack: [],
+      });
+    } catch (error) {
+      console.error("Error updating experience:", error);
+    }
   };
 
   return (
     <div className="experience-container">
       <h2>Experience</h2>
 
-      {/* Saved Experiences */}
+      {/* Existing Experiences */}
       <div className="experience-list">
         {experiences.map((exp) => (
-          <div key={exp.id} className="experience-card">
-            <div className="input-row">
-              <input
-                type="text"
-                value={exp.role}
-                onChange={(e) =>
-                  handleEditChange(exp.id, "role", e.target.value)
-                }
-                placeholder="Role"
-              />
-              <input
-                type="text"
-                value={exp.company}
-                onChange={(e) =>
-                  handleEditChange(exp.id, "company", e.target.value)
-                }
-                placeholder="Company"
-              />
-            </div>
-
-            <div className="date-row">
-              <div>
-                <label>From:</label>
-                <DatePicker
-                  selected={exp.duration.from}
-                  onChange={(date) =>
-                    handleEditChange(exp.id, "duration", {
-                      ...exp.duration,
-                      from: date,
+          <div key={exp._id} className="experience-card">
+            <div className="experience-info">
+              <h3>{exp.role}</h3>
+              <p className="company">{exp.company}</p>
+              <p className="duration">
+                {exp.duration.from
+                  ? new Date(exp.duration.from).toLocaleString("default", {
+                      month: "short",
+                      year: "numeric",
                     })
-                  }
-                  dateFormat="MMM yyyy"
-                  showMonthYearPicker
-                  placeholderText="Select start month"
-                />
-              </div>
-              <div>
-                <label>To:</label>
-                <DatePicker
-                  selected={exp.duration.to}
-                  onChange={(date) =>
-                    handleEditChange(exp.id, "duration", {
-                      ...exp.duration,
-                      to: date,
+                  : "N/A"}{" "}
+                -{" "}
+                {exp.duration.to
+                  ? new Date(exp.duration.to).toLocaleString("default", {
+                      month: "short",
+                      year: "numeric",
                     })
-                  }
-                  dateFormat="MMM yyyy"
-                  showMonthYearPicker
-                  placeholderText="Select end month"
-                />
+                  : "Present"}
+              </p>
+              <p className="description">{exp.description}</p>
+              <div className="tech-stack-display">
+                {exp.techStack.map((tech, i) => (
+                  <span key={i}>{tech}</span>
+                ))}
               </div>
             </div>
-
-            <textarea
-              value={exp.description}
-              onChange={(e) =>
-                handleEditChange(exp.id, "description", e.target.value)
-              }
-              placeholder="Description"
-              rows={3}
-            />
-
-            <div className="tech-stack-display">
-              {exp.techStack.map((tech, i) => (
-                <span key={i}>{tech}</span>
-              ))}
+            <div className="actions">
+              <button onClick={() => handleEdit(exp)}>Edit</button>
+              <button onClick={() => handleDelete(exp._id)}>Delete</button>
             </div>
-
-            <button className="delete-btn" onClick={() => handleDelete(exp.id)}>
-              Delete
-            </button>
           </div>
         ))}
       </div>
 
-      {/* Add New Experience */}
+      {/* Add / Edit Form */}
       <div className="add-experience">
-        <h3>Add New Experience</h3>
+        <h3>{editingExperience ? "Edit Experience" : "Add New Experience"}</h3>
+
         <div className="input-row wide">
           <input
             type="text"
@@ -235,9 +241,15 @@ const Experience = () => {
           </div>
         </div>
 
-        <button className="add-btn" onClick={handleAddExperience}>
-          + Add Experience
-        </button>
+        {editingExperience ? (
+          <button className="add-btn" onClick={handleUpdate}>
+            Update Experience
+          </button>
+        ) : (
+          <button className="add-btn" onClick={handleAddExperience}>
+            + Add Experience
+          </button>
+        )}
       </div>
     </div>
   );

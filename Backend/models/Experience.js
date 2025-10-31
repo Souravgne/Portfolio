@@ -10,7 +10,7 @@ const experienceSchema = new mongoose.Schema({
     to: { type: Date },
   },
   techStack: [String],
-  createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  createdBy: { type: String, required: true },
 });
 
 const Experience = mongoose.model("Experience", experienceSchema);

@@ -10,9 +10,9 @@ import {
 
 const router = express.Router();
 
-router.post("/", authMiddleware, createExperience);
-router.get("/", authMiddleware, getExperiences);
-router.put("/:id", authMiddleware, updateExperience);
-router.delete("/:id", authMiddleware, deleteExperience);
+router.post("/", createExperience);
+router.get("/", getExperiences);
+router.put("/:id", updateExperience);
+router.delete("/:id", deleteExperience);
 
 export default router;
