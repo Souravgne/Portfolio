@@ -1,20 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { AiFillEye, AiFillGithub } from 'react-icons/ai';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from "react";
+import { AiFillEye, AiFillGithub } from "react-icons/ai";
+import { motion } from "framer-motion";
+import { Link } from "react-router-dom"; // ✅ Import Link for navigation
 
-import { AppWrap, MotionWrap } from '../../wrapper';
+import { AppWrap, MotionWrap } from "../../wrapper";
 import { usePortfolio } from "../../context/context";
 
-import './Work.scss';
+import "./Work.scss";
 
 const Work = () => {
   const { projects, loading } = usePortfolio();
   const [works, setWorks] = useState([]);
   const [filterWork, setFilterWork] = useState([]);
-  const [activeFilter, setActiveFilter] = useState('All');
+  const [activeFilter, setActiveFilter] = useState("All");
   const [animateCard, setAnimateCard] = useState({ y: 0, opacity: 1 });
 
-  // ✅ Load projects when fetched
   useEffect(() => {
     if (!loading && projects?.length > 0) {
       setWorks(projects);
@@ -28,7 +28,7 @@ const Work = () => {
 
     setTimeout(() => {
       setAnimateCard([{ y: 0, opacity: 1 }]);
-      if (item === 'All') {
+      if (item === "All") {
         setFilterWork(works);
       } else {
         setFilterWork(works.filter((work) => work.tags.includes(item)));
@@ -40,6 +40,9 @@ const Work = () => {
     return <p className="p-text">Loading projects...</p>;
   }
 
+  // ✅ Show only 3 projects for now
+  const visibleProjects = filterWork.slice(0, 3);
+
   return (
     <>
       <h2 className="head-text">
@@ -47,17 +50,19 @@ const Work = () => {
       </h2>
 
       <div className="app__work-filter">
-        {['UI/UX', 'Web App', 'Mobile App', 'React JS', 'All'].map((item, index) => (
-          <div
-            key={index}
-            onClick={() => handleWorkFilter(item)}
-            className={`app__work-filter-item app__flex p-text ${
-              activeFilter === item ? 'item-active' : ''
-            }`}
-          >
-            {item}
-          </div>
-        ))}
+        {["UI/UX", "Web App", "Mobile App", "React JS", "All"].map(
+          (item, index) => (
+            <div
+              key={index}
+              onClick={() => handleWorkFilter(item)}
+              className={`app__work-filter-item app__flex p-text ${
+                activeFilter === item ? "item-active" : ""
+              }`}
+            >
+              {item}
+            </div>
+          )
+        )}
       </div>
 
       <motion.div
@@ -65,14 +70,18 @@ const Work = () => {
         transition={{ duration: 0.5, delayChildren: 0.5 }}
         className="app__work-portfolio"
       >
-        {filterWork.map((work, index) => (
+        {visibleProjects.map((work, index) => (
           <div className="app__work-item app__flex" key={index}>
             <div className="app__work-img app__flex">
               <img src={work.imgUrl} alt={work.title} />
 
               <motion.div
                 whileHover={{ opacity: [0, 1] }}
-                transition={{ duration: 0.25, ease: 'easeInOut', staggerChildren: 0.5 }}
+                transition={{
+                  duration: 0.25,
+                  ease: "easeInOut",
+                  staggerChildren: 0.5,
+                }}
                 className="app__work-hover app__flex"
               >
                 {work.liveLink && (
@@ -115,12 +124,21 @@ const Work = () => {
           </div>
         ))}
       </motion.div>
+
+      {/* ✅ View More Button */}
+      {filterWork.length > 3 && (
+        <div className="app__view-more">
+          <Link to="/project" className="view-more-btn">
+            View More
+          </Link>
+        </div>
+      )}
     </>
   );
 };
 
 export default AppWrap(
-  MotionWrap(Work, 'app__works'),
-  'work',
-  'app__primarybg',
+  MotionWrap(Work, "app__works"),
+  "work",
+  "app__primarybg"
 );
