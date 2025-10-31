@@ -1,7 +1,11 @@
 import React from 'react';
 import { NavigationDots, SocialMedia } from '../components';
+import { usePortfolio } from '../context/context';
+
 
 const AppWrap = (Component, idName, classNames) => function HOC() {
+    const { userDetails, loading } = usePortfolio();
+  
   return (
     <div id={idName} className={`app__container ${classNames}`}>
       <SocialMedia />
@@ -9,7 +13,7 @@ const AppWrap = (Component, idName, classNames) => function HOC() {
         <Component />
 
         <div className="copyright">
-          <p className="p-text">@2020 MICHAEL</p>
+          <p className="p-text">@2022{loading ? "Loading..." : userDetails.fullName || "Your Name"}</p>
           <p className="p-text">All rights reserved</p>
         </div>
       </div>
