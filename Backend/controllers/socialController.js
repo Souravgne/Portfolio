@@ -4,6 +4,7 @@ import Social from "../models/Social.js";
 export const createSocial = async (req, res) => {
   try {
     const newSocial = new Social(req.body);
+    console.log("Creating Social:", newSocial);
     const saved = await newSocial.save();
     res.status(201).json(saved);
   } catch (err) {

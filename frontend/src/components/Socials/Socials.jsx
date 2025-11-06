@@ -1,28 +1,31 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import "./Socials.scss";
+import { BASE_URL } from './../../config';
 
 const Socials = () => {
-  const [socials, setSocials] = useState([
-    {
-      id: 1,
-      name: "LinkedIn",
-      link: "https://linkedin.com/in/username",
-      thumbnail: null,
-    },
-    {
-      id: 2,
-      name: "GitHub",
-      link: "https://github.com/username",
-      thumbnail: null,
-    },
-  ]);
-
+  const [socials, setSocials] = useState([]);
   const [newSocial, setNewSocial] = useState({
     name: "",
     link: "",
     thumbnail: null,
   });
 
+  // ✅ Fetch socials from API on mount
+  useEffect(() => {
+    const fetchSocials = async () => {
+      try {
+        const res = await axios.get(`${BASE_URL}/api/socials`);
+        setSocials(res.data);
+      } catch (err) {
+        console.error("Error fetching socials:", err);
+      }
+    };
+
+    fetchSocials();
+  }, []);
+
+  // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setNewSocial((prev) => ({ ...prev, [name]: value }));
@@ -32,14 +35,33 @@ const Socials = () => {
     setNewSocial((prev) => ({ ...prev, thumbnail: e.target.files[0] }));
   };
 
-  const handleAddSocial = () => {
-    if (!newSocial.name || !newSocial.link) return;
-    setSocials([...socials, { ...newSocial, id: Date.now() }]);
-    setNewSocial({ name: "", link: "", thumbnail: null });
-  };
+  // ✅ Add social to backend
+ const handleAddSocial = async () => {
+  if (!newSocial.name || !newSocial.link) return;
 
-  const handleDelete = (id) => {
-    setSocials(socials.filter((s) => s.id !== id));
+  try {
+    const res = await axios.post(`${BASE_URL}/api/socials`, {
+      name: newSocial.name,
+      link: newSocial.link,
+      thumbnail: null, // or a placeholder URL
+    });
+
+    setSocials((prev) => [...prev, res.data]);
+    setNewSocial({ name: "", link: "", thumbnail: null });
+  } catch (err) {
+    console.error("Error adding social:", err);
+  }
+};
+
+
+  // ✅ Delete social from backend
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`${BASE_URL}/api/socials/${id}`);
+      setSocials((prev) => prev.filter((s) => s._id !== id));
+    } catch (err) {
+      console.error("Error deleting social:", err);
+    }
   };
 
   return (
@@ -47,12 +69,17 @@ const Socials = () => {
       <h2>Social Accounts</h2>
 
       <div className="social-list">
+        {socials.length === 0 && <p>No socials available.</p>}
         {socials.map((social) => (
-          <div key={social.id} className="social-card">
+          <div key={social._id} className="social-card">
             <div className="social-info">
               {social.thumbnail && (
                 <img
-                  src={URL.createObjectURL(social.thumbnail)}
+                  src={
+                    typeof social.thumbnail === "string"
+                      ? `${BASE_URL}${social.thumbnail}`
+                      : URL.createObjectURL(social.thumbnail)
+                  }
                   alt={social.name}
                 />
               )}
@@ -70,7 +97,7 @@ const Socials = () => {
             </div>
             <button
               className="delete-btn"
-              onClick={() => handleDelete(social.id)}
+              onClick={() => handleDelete(social._id)}
             >
               Delete
             </button>
